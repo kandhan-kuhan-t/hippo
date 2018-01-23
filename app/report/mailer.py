@@ -68,6 +68,6 @@ try:
                   test: bool = False, *args, **kwargs):
         return mailer.send_mail(from_address, to_addresses, subject, message, test, *args, **kwargs)
 
-    send_mail('support@mail.cyces.co', ('kandhan.kuhan@gmail.com', ), 'testing', 'testing')
+    # send_mail('support@mail.cyces.co', ('kandhan.kuhan@gmail.com', ), 'testing', 'testing')
 except Exception as e:
     mail_logger.error(e)
