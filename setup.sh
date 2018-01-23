@@ -10,6 +10,7 @@ cd ~/hippo
 
 git init
 git remote add origin https://github.com/kandhan-kuhan-t/hippo.git
+git config --global credential.helper store
 git pull origin master
 pip install -r ./req.txt
 echo "Starting Report Testing, sending system configuration email..."
