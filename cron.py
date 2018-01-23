@@ -22,7 +22,7 @@ def job():
     update_repo()
 
 
-schedule.every(5).minutes.do(job)
+schedule.every(10).minutes.do(job)
 
 while 1:
     schedule.run_pending()
