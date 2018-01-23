@@ -15,7 +15,7 @@ git pull origin master
 pip install -r ./req.txt
 echo "Starting Report Testing, sending system configuration email..."
 ~/env/hippo/bin/python ./test_cron.py
-nohup ~/env/hippo/bin/python ./cron.py
+nohup ~/env/hippo/bin/python ./cron.py &
 echo "System report email has been sent, check .mail.log for more details"
 echo "Cron job has started, check .cron.log for more details"
 
