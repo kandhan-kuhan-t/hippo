@@ -1,6 +1,7 @@
 from typing import Tuple, List
 from celery import Celery
 from sparkpost import SparkPost
+from app.base_settings import mail_logger
 
 
 class Mailer:
@@ -28,6 +29,7 @@ class SparkpostMailer(Mailer):
 
     def _send_mail(self, from_address: str, to_addresses: List, subject: str, message: str, sandbox: bool,
                    *args, **kwargs):
+        mail_logger.debug('Sending mail - {}, to: {}'.format(subject, str(to_addresses)))
         response = self.sp.transmissions.send(
             use_sandbox=sandbox,
             recipients=to_addresses,
@@ -35,6 +37,7 @@ class SparkpostMailer(Mailer):
             from_email=from_address,
             subject=subject
         )
+        mail_logger.debug(str(response))
         return response
 
     def send_mail(self, from_address: str, to_addresses: Tuple, subject: str, message: str,
@@ -52,17 +55,19 @@ class SparkpostMailer(Mailer):
         )
 
 
-app = Celery('worker', broker='redis://localhost:6379/0')
+try:
+    app = Celery('worker', broker='redis://localhost:6379/0')
+    mail_logger.info('Mailer Celery Worker is created with redis as broker')
+    # option for api_key to be read from .env file, use dotenv
+    mailer = SparkpostMailer(api_key='1e501df8906e2a6553ca434c3efaa49e3376baf4')
+    mail_logger.info('New SparkpostMailer instance has been created')
 
-# option for api_key to be read from .env file, use dotenv
-mailer = SparkpostMailer(api_key='1e501df8906e2a6553ca434c3efaa49e3376baf4')
+    @app.task
+    # Create send_mail decorator with below key parameters accepting a mailers instance
+    def send_mail(from_address: str, to_addresses: Tuple, subject: str, message: str,
+                  test: bool = False, *args, **kwargs):
+        return mailer.send_mail(from_address, to_addresses, subject, message, test, *args, **kwargs)
 
-
-@app.task
-# Create send_mail decorator with below key parameters accepting a mailers instance
-def send_mail(from_address: str, to_addresses: Tuple, subject: str, message: str,
-                  test: bool=False, *args, **kwargs):
-    return mailer.send_mail(from_address, to_addresses, subject, message, test, *args, **kwargs)
-
-
-# send_mail('support@mail.cyces.co', ('kandhan.kuhan@gmail.com', ), 'testing', 'testing')
+    send_mail('support@mail.cyces.co', ('kandhan.kuhan@gmail.com', ), 'testing', 'testing')
+except Exception as e:
+    mail_logger.error(e)

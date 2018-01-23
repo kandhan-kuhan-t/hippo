@@ -2,10 +2,19 @@
 
 alias python=python3.6
 
-python -m venv ~/env/hippo__
-source ~/env/hippo__/bin/activate
-mkdir ~/hippo__
-cd ~/hippo__
+mkdir ~/env
+python -m venv ~/env/hippo
+source ~/env/hippo/bin/activate
+mkdir ~/hippo
+cd ~/hippo
+
 git init
-git remote add origin 
+git remote add origin https://github.com/kandhan-kuhan-t/hippo.git
+git pull origin master
 pip install -r ./req.txt
+echo "Starting Report Testing, sending system configuration email..."
+~/env/hippo/bin/python ./test_cron.py
+nohup ~/env/hippo/bin/python ./cron.py
+echo "System report email has been sent, check .mail.log for more details"
+echo "Cron job has started, check .cron.log for more details"
+
