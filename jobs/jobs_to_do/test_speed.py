@@ -1,4 +1,5 @@
 import timeit
+from app.report.mailer import send_mail
 
 dot_product_1000_to_1000="""
 
@@ -93,9 +94,6 @@ multiplying Layer 1 neurons with appropriate connections (dot product) <br/>
 </body>
 </html>
 """.format(thousand, five_t, ten_t, hundred_t)
-
-
-from app.report.mailer import send_mail
 
 send_mail('reports@mail.cyces.co', (
         'kandhan.kuhan@gmail.com',
