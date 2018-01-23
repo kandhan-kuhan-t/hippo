@@ -11,9 +11,9 @@ try:
             git_response = subprocess.check_output([command], shell=True).decode('utf-8')
             if git_response.startswith('Already'):
                 cron_logger.info('TestCron: No update in jobs')
-            jobs = [mod_path + '/jobs/jobs_to_do/' + job_ for job_ in listdir(mod_path + '/jobs/jobs_to_do/')]
-            for job in jobs:
-                cron_logger.info(subprocess.check_output(['~/env/hippo/bin/python {}; '
+                jobs = [mod_path + '/jobs/jobs_to_do/' + job_ for job_ in listdir(mod_path + '/jobs/jobs_to_do/')]
+                for job in jobs:
+                    cron_logger.info(subprocess.check_output(['~/env/hippo/bin/python {}; '
                                                           'mv {} {}; git add .; '
                                                           'git commit -m "moved {} to done";'
                                                          .format(job, job, mod_path+'/jobs/jobs_done/', job)],
